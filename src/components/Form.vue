@@ -1,5 +1,5 @@
 <script setup>
-  import { reactive } from 'vue';
+  import { reactive, computed } from 'vue';
   import Alert from './Alert.vue';
 
   const alert = reactive({
@@ -8,6 +8,10 @@
   })
 
   const props = defineProps({
+    id: {
+      type: [String, null],
+      required: true
+    },
     name: {
       type: String,
       required: true
@@ -51,6 +55,10 @@
     }, 3000)
 
   }
+
+  const isEdit = computed(() => {
+    return props.id
+  })
 
 </script>
 
@@ -162,7 +170,7 @@
       <input 
         type="submit"
         class="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-        value="Add patient"
+        :value="[isEdit ? 'Save Changes' : 'Add patient']"
         />
     </form>
 

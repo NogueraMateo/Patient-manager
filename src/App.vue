@@ -30,7 +30,13 @@
   })
 
   const addPatient = () => {
-    patients.value.push({...patient, id: uid()})
+    if (patient.id) {
+      const { id } = patient
+      const i = patients.value.findIndex(p => p.id === id)
+      patients.value[i] = {...patient}
+    } else {
+      patients.value.push({...patient, id: uid()})
+    }
 
     // Reset form
     Object.assign(patient, {
@@ -38,7 +44,8 @@
       owner: '',
       email: '',
       discharge: '',
-      symptoms: ''
+      symptoms: '',
+      id: null
     })
 
  }
@@ -50,6 +57,11 @@
 
   const addPatientLocalStorage = () => {
     localStorage.setItem('patients', JSON.stringify(patients.value))
+  }
+
+  const updatePatient = (id) => {
+    const patientToUpdate = patients.value.find(p => p.id === id)
+    Object.assign(patient, patientToUpdate)
   }
 
 </script>
@@ -65,6 +77,7 @@
         v-model:email="patient.email"
         v-model:discharge="patient.discharge"
         v-model:symptoms="patient.symptoms"
+        :id="patient.id"
         @add-patient="addPatient"
       />
 
@@ -87,6 +100,7 @@
             v-for="p in patients"
             :patient="p"
             @delete-patient="deletePatient"
+            @update-patient="updatePatient"
           />
 
         </div>
