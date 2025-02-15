@@ -7,21 +7,48 @@
     type: ''
   })
 
-  const patient = reactive({
-    name: '',
-    owner: '',
-    email: '',
-    discharge: '',
-    symptoms: ''
+  const props = defineProps({
+    name: {
+      type: String,
+      required: true
+    },
+    owner: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    discharge: {
+      type: String,
+      required: true
+    },
+    symptoms: {
+      type: String,
+      required: true
+    }
   })
+
+  const emit = defineEmits(['update:name', 'update:owner', 'update:email', 'update:discharge', 'update:symptoms', 'add-patient'])
   
   const validateForm = () => {
-    if (Object.values(patient).includes('')){
+    if (Object.values(props).includes('')){
       alert.description = 'All fields are required';
       alert.type = 'error';
       return;
     }
 
+    emit('add-patient')
+    alert.description = 'Patient added successfully';
+    alert.type = 'success';
+
+    setTimeout(() => {
+      Object.assign(alert, {
+        description: '',
+        type: ''
+      })
+    }, 3000)
 
   }
 
@@ -29,11 +56,13 @@
 
 <template>
   <div class="md:w-1/2">
-    <h2 class="font-black text-3xl text-center">Seguimiento pacientes</h2>
+    <h2 class="font-black text-3xl text-center">
+      Patient tracking
+    </h2>
     
     <p class="text-lg mt-5 text-center mb-10">
-      Añade Pacientes y 
-      <span class="text-indigo-600 font-bold">Administralos</span>
+      Add patients and
+      <span class="text-indigo-600 font-bold">manage them</span>
     </p>
 
     <Alert 
@@ -54,8 +83,9 @@
           id="pet"
           type="text"
           placeholder="Name of the pet"
-          v-model="patient.name"
           class="border-2 w-full mt-2 p-2 placeholder-gray-400 rounded-md"
+          :value="name"
+          @input="$emit('update:name', $event.target.value)"
         >
       </div>
 
@@ -71,7 +101,8 @@
           type="text"
           placeholder="Name of the owner"
           class="border-2 w-full mt-2 p-2 placeholder-gray-400 rounded-md"
-          v-model="patient.owner"
+          :value="owner" 
+          @input="$emit('update:owner', $event.target.value)"
         >
       </div>
 
@@ -88,7 +119,8 @@
           type="email"
           placeholder="Email"
           class="border-2 w-full mt-2 p-2 placeholder-gray-400 rounded-md"
-          v-model="patient.email"
+          :value="email"
+          @input="$emit('update:email', $event.target.value)"
         >
       </div>
 
@@ -105,7 +137,9 @@
           type="date"
           placeholder="Discharge"
           class="border-2 w-full mt-2 p-2 placeholder-gray-400 rounded-md"
-          v-model="patient.discharge"
+          :value="discharge"
+          @input="$emit('update:discharge', $event.target.value)"
+
         >
       </div>
 
@@ -120,7 +154,8 @@
           id="Symptoms"
           placeholder="Describe the symptoms"
           class="border-2 w-full mt-2 p-2 placeholder-gray-400 rounded-md h-40"
-          v-model="patient.symptoms"
+          :value="symptoms"
+          @input="$emit('update:symptoms', $event.target.value)"
         />
       </div>
 
